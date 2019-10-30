@@ -16,6 +16,7 @@ function operate(operator, a, b) {
 
 function solve() {
     let answer = operate(operator, num1, num2);
+    answer = (Math.round(answer*1000))/1000;
     display.innerText = answer;
     backspaceButton.removeEventListener('click',backspace)
     num1 = answer;
