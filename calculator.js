@@ -19,15 +19,6 @@ function solve() {
     display.innerText = answer;
     backspaceButton.removeEventListener('click',backspace)
     num1 = answer;
-    initialized = false;
-}
-
-function performAdditionalOperation() {
-    let answer = operate(operator, num1, num2);
-    display.innerText = answer;
-    num1 = answer;
-    backspaceButton.removeEventListener('click',backspace)
-    entry="";
 }
 
 function clearDisplay() {
@@ -48,7 +39,13 @@ function storeValue() {
         num1 = parseFloat(display.innerText);
         entry = "";
     }
- }
+}
+
+function checkIfNewProblem() {
+    if (typeOfLastSelection == "equals grid" || typeOfLastSelection == "clear grid") {
+        operator = "";
+    }
+}
 
 function enterValue(e) {
     entry += e.target.innerText;
@@ -66,12 +63,15 @@ function setDecimalBtn() {
 
 function chooseOperator(e) {
     backspaceButton.removeEventListener('click',backspace)
-    if (operator) {
+    if (typeOfLastSelection == e.target.className || typeOfLastSelection == "equals grid") {
+        operator = e.target.innerText;
+    } else if (operator) {
+        solve();
         operator = e.target.innerText;
         entry = "";
     } else {
         operator = e.target.innerText;
-        initialized = true;
+        initialized = true;   
     }
 }
 
@@ -99,18 +99,23 @@ function changeSign() {
 }
 
 function numberClick(e) {
+    checkIfNewProblem();
     enterValue(e);
     enableBackspace();
+    typeOfLastSelection = e.target.className;
 }
 
 function operatorClick(e) {
     storeValue();
     chooseOperator(e);
+    typeOfLastSelection = e.target.className;
 }
 
 function equalClick(e) {
     storeValue();
     solve();
+    typeOfLastSelection = e.target.className;
+    initialized = false;
 }
 
 const numberButton = document.querySelectorAll('.number');
@@ -126,6 +131,7 @@ let num2;
 let operator = "";
 let entry = "";
 let initialized = false;
+let typeOfLastSelection = "";
 
 numberButton.forEach(button => button.addEventListener('click',numberClick));
 decimalButton.addEventListener('click',enterValue);
